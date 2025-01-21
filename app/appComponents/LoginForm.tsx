@@ -24,7 +24,11 @@ const formSchema = z.object({
   password: z
     .string()
     .min(1, { message: "Password must be at least 1 character" })
-    .max(50, { message: "Password must be less than 50 characters" }),
+    .max(50, { message: "Password must be less than 50 characters" })
+    .trim()
+    .refine((value) => value.trim().length > 0, {
+      message: "Password cannot be empty or contain only spaces",
+    }),
 });
 
 const LoginForm = () => {
@@ -53,11 +57,7 @@ const LoginForm = () => {
             <FormItem>
               <FormLabel>E-mail</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="test@example.com"
-                  className="placeholder:text-black/50"
-                  {...field}
-                />
+                <Input placeholder="test@example.com" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -70,11 +70,7 @@ const LoginForm = () => {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="Password"
-                  {...field}
-                  className="placeholder:text-black/50"
-                />
+                <Input placeholder="Password" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
