@@ -1,5 +1,9 @@
-import { Button } from "@/components/ui/button";
+import LoginPage from "./LoginPage";
 
 export default function Home() {
-  return <Button>Click me</Button>;
+  return (
+    <div className="w-full h-full">
+      <LoginPage />
+    </div>
+  );
 }
