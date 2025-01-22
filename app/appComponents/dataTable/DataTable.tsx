@@ -50,19 +50,42 @@ export function DataTable<TData extends object, TValue>({
   return (
     <div>
       <div className="mb-2 flex gap-2">
-        <Button className="bg-blue-400">Block</Button>
-        <Button className="bg-blue-400">Unblock</Button>
+        <Button
+          className="bg-blue-400"
+          onClick={() => {
+            const rows = table.getSelectedRowModel().rows;
+            const users: User[] = rows.map((r) => r.original as User);
+
+            users.forEach((user) => {
+              console.log(`Blocking user with ID: ${user.id}`);
+              axios.patch("/api/users/block/" + user.id);
+            });
+          }}
+        >
+          Block
+        </Button>
+        <Button
+          className="bg-blue-400"
+          onClick={() => {
+            const rows = table.getSelectedRowModel().rows;
+            const users: User[] = rows.map((r) => r.original as User);
+
+            users.forEach((user) => {
+              console.log(`Unblocking user with ID: ${user.id}`);
+              axios.patch("/api/users/unblock/" + user.id);
+            });
+          }}
+        >
+          Unblock
+        </Button>
         <Button
           className="bg-red-400"
           onClick={() => {
             const rows = table.getSelectedRowModel().rows;
-            // Use the generic type constraint to safely access `User` properties.
             const users: User[] = rows.map((r) => r.original as User);
 
-            // Example: Map over user IDs and perform an API call
             users.forEach((user) => {
               console.log(`Deleting user with ID: ${user.id}`);
-              // Make delete request here
               axios.delete("/api/users/" + user.id);
             });
           }}
