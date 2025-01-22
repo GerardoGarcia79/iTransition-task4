@@ -8,13 +8,14 @@ import { Checkbox } from "@/components/ui/checkbox";
 export type User = {
   id: string;
   name: string;
-  status: "active" | "blocked";
+  status: string;
   email: string;
   lastSeen: Date;
 };
 
 export const columns: ColumnDef<User>[] = [
   {
+    accessorKey: "select",
     id: "select",
     header: ({ table }) => (
       <Checkbox
@@ -37,6 +38,7 @@ export const columns: ColumnDef<User>[] = [
     enableHiding: false,
   },
   {
+    id: "name",
     accessorKey: "name",
     header: "Name",
   },

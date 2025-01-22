@@ -21,13 +21,15 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { User } from "./Columns";
+import axios from "axios";
 
-interface DataTableProps<TData, TValue> {
+interface DataTableProps<TData extends object, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<TData extends object, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
@@ -47,6 +49,27 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
+      <div className="mb-2 flex gap-2">
+        <Button className="bg-blue-400">Block</Button>
+        <Button className="bg-blue-400">Unblock</Button>
+        <Button
+          className="bg-red-400"
+          onClick={() => {
+            const rows = table.getSelectedRowModel().rows;
+            // Use the generic type constraint to safely access `User` properties.
+            const users: User[] = rows.map((r) => r.original as User);
+
+            // Example: Map over user IDs and perform an API call
+            users.forEach((user) => {
+              console.log(`Deleting user with ID: ${user.id}`);
+              // Make delete request here
+              axios.delete("/api/users/" + user.id);
+            });
+          }}
+        >
+          Delete
+        </Button>
+      </div>
       <div className="rounded-md border">
         <Table>
           <TableHeader>
