@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { formSchema } from "../validationSchemas";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,32 +15,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
-const formSchema = z.object({
-  email: z
-    .string()
-    .email()
-    .min(1, { message: "Email must be at least 1 character" })
-    .max(50, { message: "Email must be less than 50 characters" }),
-  password: z
-    .string()
-    .min(1, { message: "Password must be at least 1 character" })
-    .max(50, { message: "Password must be less than 50 characters" })
-    .trim()
-    .refine((value) => value.trim().length > 0, {
-      message: "Password cannot be empty or contain only spaces",
-    }),
-  name: z
-    .string()
-    .min(3, { message: "Name must be at least 3 characters" })
-    .max(50, { message: "Name must be less than 50 characters" }),
-  position: z
-    .string()
-    .min(3, { message: "Position must be at least 3 characters" })
-    .max(50, { message: "Position must be less than 50 characters" }),
-});
+import { useRouter } from "next/navigation";
 
 const SignupForm = () => {
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -48,8 +27,24 @@ const SignupForm = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const response = await fetch("/api/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: values.name,
+        email: values.email,
+        password: values.password,
+        position: values.position,
+      }),
+    });
+    if (response.ok) {
+      router.push("/login");
+    } else {
+      console.error("Registration failed");
+    }
   }
   return (
     <Form {...form}>
